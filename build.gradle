@@ -1,9 +1,9 @@
 buildscript {
     repositories {
         jcenter()
-        maven { 
-			url = 'https://maven.cleanroommc.com' 
-		}
+//        maven {
+//			url = 'https://maven.cleanroommc.com'
+//		}
 		maven { 
 			url = 'https://repo.spongepowered.org/maven' 
 		}
@@ -41,6 +41,8 @@ minecraft {
     version = '1.12.2-14.23.5.2847'
     runDir = 'run'
     mappings = 'stable_39'
+	replace("@VERSION@", mod_version)
+	replaceIn("Standalone.java")
 }
 
 repositories {

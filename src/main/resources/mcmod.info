@@ -1,16 +1,18 @@
 [
-{
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["CleanroomMC"],
-  "credits": "Authors of this project",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "standalone",
+    "name": "Standalone",
+    "description": "Making features from mods Standalone.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "CleanroomMC"
+    ],
+    "credits": "TechLord22",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
