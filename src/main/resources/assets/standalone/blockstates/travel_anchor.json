@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "inventory": {
+      "model": "standalone:travel_anchor"
+    },
+    "normal": {
+      "model": "standalone:travel_anchor"
+    }
+  }
+}
