@@ -5,3 +5,12 @@ tile.travel_anchor.name=Travel Anchor
 
 # containers
 container.travel_anchor=Travel Anchor
+
+# chat messages
+standalone.travel_accessible.unauthorized=You are not allowed to access this block
+standalone.travel_accessible.outofrange=Destination out of range
+standalone.travel_accessible.invalidtarget=Destination is obstructed
+standalone.item_travel_staff.chat.notEnoughPower=Not enough power
+standalone.travel_accessible.skip.locked=Skipped locked anchor
+standalone.travel_accessible.skip.private=Skipped private anchor
+standalone.travel_accessible.skip.obstructed=Skipped obstructed anchor
