@@ -4,14 +4,12 @@ import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.blockowner.UserIdentification;
 import com.cleanroommc.standalone.api.teleport.ITTravelAccessible;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
+import com.cleanroommc.standalone.api.tileentity.StandaloneInventoryTileEntity;
 import com.cleanroommc.standalone.common.container.TravelAnchorContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 
@@ -20,10 +18,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityTravelAnchor extends TileEntityLockableLoot implements ITTravelAccessible {
-
-    public int playerUsingCount = 0;
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implements ITTravelAccessible {
 
     private AccessMode accessMode = AccessMode.PUBLIC;
     private NonNullList<ItemStack> password = NonNullList.withSize(5, ItemStack.EMPTY);
@@ -34,39 +29,8 @@ public class TileEntityTravelAnchor extends TileEntityLockableLoot implements IT
     private String label;
     private boolean visible = true;
 
-    @Override
-    public int getSizeInventory() {
-        return inventory.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        for (ItemStack itemstack : this.inventory)
-            if (!itemstack.isEmpty())
-                return false;
-
-        return true;
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-
-    @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
-        playerUsingCount++;
-    }
-
-    @Override
-    public void closeInventory(@Nonnull EntityPlayer player) {
-        playerUsingCount--;
-    }
-
-    @Nonnull
-    @Override
-    protected NonNullList<ItemStack> getItems() {
-        return inventory;
+    public TileEntityTravelAnchor() {
+        super("travel_anchor", 27);
     }
 
     @Nonnull
@@ -79,29 +43,6 @@ public class TileEntityTravelAnchor extends TileEntityLockableLoot implements IT
     @Override
     public String getGuiID() {
         return Standalone.MODID + ":travel_anchor";
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return "container.travel_anchor";
-    }
-
-    @Override
-    public void readFromNBT(@Nonnull NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-        if (!checkLootAndRead(compound))
-            ItemStackHelper.loadAllItems(compound, inventory);
-    }
-
-    @Nonnull
-    @Override
-    public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
-        super.writeToNBT(compound);
-        if (!checkLootAndWrite(compound))
-            ItemStackHelper.saveAllItems(compound, inventory);
-        return compound;
     }
 
     private boolean isOwnerUser(UserIdentification identification) {
