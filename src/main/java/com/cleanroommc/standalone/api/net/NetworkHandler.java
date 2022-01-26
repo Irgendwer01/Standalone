@@ -2,6 +2,7 @@ package com.cleanroommc.standalone.api.net;
 
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.net.packet.CPacketOpenAuthGui;
+import com.cleanroommc.standalone.api.net.packet.CPacketTravelEvent;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.IThreadListener;
@@ -30,6 +31,7 @@ public class NetworkHandler {
         channel.register(new NetworkHandler());
 
         registerPacket(CPacketOpenAuthGui.class);
+        registerPacket(CPacketTravelEvent.class);
 
         initServer();
         if (FMLCommonHandler.instance().getSide().isClient()) {
@@ -40,6 +42,7 @@ public class NetworkHandler {
     // Register packets as "received on server" here
     protected static void initServer() {
         registerServerExecutor(CPacketOpenAuthGui.class);
+        registerServerExecutor(CPacketTravelEvent.class);
     }
 
     // Register packets as "received on client" here

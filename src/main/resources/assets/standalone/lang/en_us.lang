@@ -3,6 +3,9 @@
 # blocks
 tile.travel_anchor.name=Travel Anchor
 
+# items
+item.travel_staff.name=Staff of Travelling
+
 # containers
 container.travel_anchor=Travel Anchor
 

@@ -26,7 +26,7 @@ public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityPro
     public BlockTravelAnchor() {
         super(new BlockSettings(Material.IRON)
                 .strength(2.5f)
-                .soundType(SoundType.ANVIL)
+                .soundType(SoundType.STONE)
                 .creativeTab(CreativeTabs.TRANSPORTATION)
                 .translationKey("travel_anchor")
         );

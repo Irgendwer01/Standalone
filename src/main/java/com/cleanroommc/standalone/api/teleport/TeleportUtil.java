@@ -1,16 +1,16 @@
 package com.cleanroommc.standalone.api.teleport;
 
 import com.cleanroommc.standalone.api.util.BlockCoord;
+import com.cleanroommc.standalone.api.util.SoundHelper;
 import com.cleanroommc.standalone.api.util.StandaloneUtilities;
 import com.cleanroommc.standalone.api.vectors.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.ITeleporter;
 
 import javax.annotation.Nonnull;
 
@@ -59,11 +59,11 @@ public class TeleportUtil {
     }
 
     private static void serverEntityLocalTeleport(@Nonnull Entity entity, @Nonnull BlockPos pos, @Nonnull TravelSource source) {
-        entity.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(entity.world, entity, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         entity.world.getChunk(pos);
         entity.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5);
         entity.fallDistance = 0;
-        entity.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(entity.world, entity, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
     private static void serverPlayerLocalTeleport(@Nonnull EntityPlayerMP player, @Nonnull BlockPos pos, boolean conserveMotion, @Nonnull TravelSource source) {
@@ -71,10 +71,10 @@ public class TeleportUtil {
         ChunkTicket.loadChunk(player, player.world, BlockCoord.get(player));
         ChunkTicket.loadChunk(player, player.world, pos);
 
-        player.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(player.world, player, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, player.rotationYaw, player.rotationPitch);
         player.fallDistance = 0;
-        player.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(player.world, player, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
         if (conserveMotion) {
             Vector3d velocityVex = StandaloneUtilities.getLookVecStandalone(player);
@@ -84,23 +84,20 @@ public class TeleportUtil {
     }
 
     private static void serverEntityDimensionTeleport(@Nonnull Entity entity, @Nonnull BlockPos pos, int targetDim, @Nonnull TravelSource source) {
-        entity.playSound(source.sound, 1.0F, 1.0F);
-        entity.changeDimension(targetDim, new ITeleporter() {
-            @Override
-            public void placeEntity(World world, Entity entity2, float yaw) {
-                entity2.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, entity2.rotationYaw, entity2.rotationPitch);
-                entity2.motionX = 0;
-                entity2.motionY = 0;
-                entity2.motionZ = 0;
-                entity2.fallDistance = 0;
-            }
+        SoundHelper.playSound(entity.world, entity, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        entity.changeDimension(targetDim, (world, entity2, yaw) -> {
+            entity2.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, entity2.rotationYaw, entity2.rotationPitch);
+            entity2.motionX = 0;
+            entity2.motionY = 0;
+            entity2.motionZ = 0;
+            entity2.fallDistance = 0;
         });
-        entity.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(entity.world, entity, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
     private static void serverPlayerDimensionTeleport(@Nonnull final EntityPlayerMP player, @Nonnull final BlockPos pos, final int targetDim, final boolean conserveMotion, @Nonnull final TravelSource source) {
         ChunkTicket.loadChunk(player, player.world, BlockCoord.get(player));
-        player.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(player.world, player, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
         player.server.getPlayerList().transferPlayerToDimension(player, targetDim, (world, entity, yaw) -> {
             // like Forge's teleport command:
@@ -115,7 +112,7 @@ public class TeleportUtil {
             entity.fallDistance = 0;
         });
 
-        player.playSound(source.sound, 1.0F, 1.0F);
+        SoundHelper.playSound(player.world, player, source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         ChunkTicket.loadChunk(player, player.world, BlockCoord.get(player));
 
         if (conserveMotion) {

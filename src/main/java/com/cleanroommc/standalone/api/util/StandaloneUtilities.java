@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -381,5 +382,11 @@ public class StandaloneUtilities {
             default:
                 return EnumFacing.WEST;
         }
+    }
+
+    @Nonnull
+    public static NBTTagCompound getOrCreateNBTTagCompound(@Nonnull ItemStack stack) {
+        NBTTagCompound compound = stack.getTagCompound();
+        return compound == null ? new NBTTagCompound() : compound;
     }
 }

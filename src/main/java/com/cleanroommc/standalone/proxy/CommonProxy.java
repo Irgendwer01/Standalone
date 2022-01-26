@@ -1,6 +1,7 @@
 package com.cleanroommc.standalone.proxy;
 
 import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.api.net.NetworkHandler;
 import com.cleanroommc.standalone.api.teleport.StandaloneLifecycleEvent;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +16,7 @@ import javax.annotation.Nonnull;
 public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {
-
+        NetworkHandler.init();
     }
 
     public void init(FMLInitializationEvent event) {

@@ -11,11 +11,11 @@ import javax.annotation.Nonnull;
 
 public class StandaloneSounds {
 
-    public static final SoundEvent TRAVEL_SOURCE = registerVanillaSound("entity.endermen.teleport");
+    public static SoundEvent TRAVEL_SOURCE;
 
     @SideOnly(Side.CLIENT)
     public static void initSounds() {
-
+        TRAVEL_SOURCE = registerVanillaSound("entity.endermen.teleport");
     }
 
     @Nonnull

@@ -14,8 +14,10 @@ public class StandaloneItems {
     public static final List<StandaloneItem> ITEMS = new ArrayList<>();
     public static final List<Item> ITEM_BLOCKS = new ArrayList<>();
 
+    public static final ItemTravelStaff TRAVEL_STAFF = register("travel_staff", new ItemTravelStaff(100_000));
 
-    private static <T extends StandaloneItem> T register(String id, @Nonnull T item) {
+    @Nonnull
+    private static <T extends StandaloneItem> T register(@Nonnull String id, @Nonnull T item) {
         item.setRegistryName(Standalone.MODID, id);
         ITEMS.add(item);
         return item;
