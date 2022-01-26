@@ -83,7 +83,7 @@ public class CPacketTravelEvent implements IPacket {
 
         if (player != null) {
             if (conserveMotion) {
-                Vector3d velocityVex = StandaloneUtilities.getLookVecEio(player);
+                Vector3d velocityVex = StandaloneUtilities.getLookVecStandalone(player);
                 SPacketEntityVelocity p = new SPacketEntityVelocity(toTp.getEntityId(), velocityVex.x, velocityVex.y, velocityVex.z);
                 ((EntityPlayerMP) player).connection.sendPacket(p);
             }

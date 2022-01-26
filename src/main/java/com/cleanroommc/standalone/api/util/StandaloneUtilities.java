@@ -28,8 +28,8 @@ import java.util.List;
 
 public class StandaloneUtilities {
 
-    public static @Nullable
-    Block getBlockFromItemId(@Nonnull ItemStack itemId) {
+    @Nullable
+    public static Block getBlockFromItemId(@Nonnull ItemStack itemId) {
         Item item = itemId.getItem();
         if (item instanceof ItemBlock) {
             return ((ItemBlock) item).getBlock();
@@ -37,8 +37,8 @@ public class StandaloneUtilities {
         return null;
     }
 
-    public static @Nonnull
-    ItemStack consumeItem(@Nonnull ItemStack stack) {
+    @Nonnull
+    public static ItemStack consumeItem(@Nonnull ItemStack stack) {
         if (stack.getItem() instanceof ItemPotion) {
             if (stack.getCount() == 1) {
                 return new ItemStack(Items.GLASS_BOTTLE);
@@ -74,6 +74,7 @@ public class StandaloneUtilities {
         }
     }
 
+    @Nullable
     public static EntityItem createDrop(@Nonnull World world, @Nonnull ItemStack stack, double x, double y, double z, boolean doRandomSpread) {
         if (stack.isEmpty()) {
             return null;
@@ -109,12 +110,13 @@ public class StandaloneUtilities {
         world.spawnEntity(entityitem);
     }
 
+    @Nonnull
     public static EntityItem createEntityItem(@Nonnull World world, @Nonnull ItemStack stack, double x, double y, double z) {
         return createEntityItem(world, stack, x, y, z, true);
     }
 
-    public static @Nonnull
-    EntityItem createEntityItem(@Nonnull World world, @Nonnull ItemStack stack, double x, double y, double z, boolean doRandomSpread) {
+    @Nonnull
+    public static EntityItem createEntityItem(@Nonnull World world, @Nonnull ItemStack stack, double x, double y, double z, boolean doRandomSpread) {
         EntityItem entityitem;
         if (doRandomSpread) {
             float f1 = 0.7F;
@@ -177,15 +179,14 @@ public class StandaloneUtilities {
         }
     }
 
-    public static @Nonnull
-    ItemStack decrStackSize(@Nonnull IInventory inventory, int slot, int size) {
+    @Nonnull
+    public static ItemStack decrStackSize(@Nonnull IInventory inventory, int slot, int size) {
         ItemStack item = inventory.getStackInSlot(slot);
         if (!item.isEmpty()) {
             if (item.getCount() <= size) {
-                ItemStack result = item;
                 inventory.setInventorySlotContents(slot, ItemStack.EMPTY);
                 inventory.markDirty();
-                return result;
+                return item;
             }
             ItemStack split = item.splitStack(size);
             inventory.markDirty();
@@ -194,34 +195,34 @@ public class StandaloneUtilities {
         return ItemStack.EMPTY;
     }
 
-    public static @Nonnull
-    Vec3d getEyePosition(@Nonnull EntityPlayer player) {
+    @Nonnull
+    public static Vec3d getEyePosition(@Nonnull EntityPlayer player) {
         double y = player.posY;
         y += player.getEyeHeight();
         return new Vec3d(player.posX, y, player.posZ);
     }
 
-    public static @Nonnull
-    Vector3d getEyePositionEio(@Nonnull EntityPlayer player) {
+    @Nonnull
+    public static Vector3d getEyePositionStandalone(@Nonnull EntityPlayer player) {
         Vector3d res = new Vector3d(player.posX, player.posY, player.posZ);
         res.y += player.getEyeHeight();
         return res;
     }
 
-    public static @Nonnull
-    Vector3d getLookVecEio(@Nonnull EntityPlayer player) {
+    @Nonnull
+    public static Vector3d getLookVecStandalone(@Nonnull EntityPlayer player) {
         Vec3d lv = player.getLookVec();
         return new Vector3d(lv.x, lv.y, lv.z);
     }
 
     // Code adapted from World.rayTraceBlocks to return all
     // collided blocks
-    public static @Nonnull
-    List<RayTraceResult> raytraceAll(@Nonnull World world, @Nonnull Vec3d startVector, @Nonnull Vec3d endVec, boolean includeLiquids) {
+    @Nonnull
+    public static List<RayTraceResult> raytraceAll(@Nonnull World world, @Nonnull Vec3d startVector, @Nonnull Vec3d endVec, boolean includeLiquids) {
         boolean ignoreBlockWithoutBoundingBox = true;
         Vec3d startVec = startVector;
 
-        List<RayTraceResult> result = new ArrayList<RayTraceResult>();
+        List<RayTraceResult> result = new ArrayList<>();
 
         if (!Double.isNaN(startVec.x) && !Double.isNaN(startVec.y) && !Double.isNaN(startVec.z)) {
             if (!Double.isNaN(endVec.x) && !Double.isNaN(endVec.y) && !Double.isNaN(endVec.z)) {
@@ -246,7 +247,7 @@ public class StandaloneUtilities {
 
                 while (k1-- >= 0) {
                     if (Double.isNaN(startVec.x) || Double.isNaN(startVec.y) || Double.isNaN(startVec.z)) {
-                        return new ArrayList<RayTraceResult>();
+                        return new ArrayList<>();
                     }
 
                     if (l == i && i1 == j && j1 == k) {
@@ -332,15 +333,13 @@ public class StandaloneUtilities {
                     i1 = MathHelper.floor(startVec.y) - (enumfacing == EnumFacing.UP ? 1 : 0);
                     j1 = MathHelper.floor(startVec.z) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
                     blockpos = new BlockPos(l, i1, j1);
-                    IBlockState iblockstate1 = world.getBlockState(blockpos);
-                    Block block1 = iblockstate1.getBlock();
+                    IBlockState blockState = world.getBlockState(blockpos);
+                    Block tracedBlock = blockState.getBlock();
 
-                    if (!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL
-                            || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) {
-                        if (block1.canCollideCheck(iblockstate1, includeLiquids)) {
-                            @Nonnull
-                            RayTraceResult raytraceresult1 = iblockstate1.collisionRayTrace(world, blockpos, startVec, endVec);
-                            result.add(raytraceresult1);
+                    if (!ignoreBlockWithoutBoundingBox || blockState.getMaterial() == Material.PORTAL
+                            || blockState.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) {
+                        if (tracedBlock.canCollideCheck(blockState, includeLiquids)) {
+                            result.add(blockState.collisionRayTrace(world, blockpos, startVec, endVec));
                         }
                     }
                 }
@@ -354,8 +353,8 @@ public class StandaloneUtilities {
         }
     }
 
-    public static @Nullable
-    EnumFacing getDirFromOffset(int xOff, int yOff, int zOff) {
+    @Nullable
+    public static EnumFacing getDirFromOffset(int xOff, int yOff, int zOff) {
         if (xOff != 0 && yOff == 0 && zOff == 0) {
             return xOff < 0 ? EnumFacing.WEST : EnumFacing.EAST;
         }
@@ -368,8 +367,8 @@ public class StandaloneUtilities {
         return null;
     }
 
-    public static @Nonnull
-    EnumFacing getFacingFromEntity(@Nonnull EntityLivingBase entity) {
+    @Nonnull
+    public static EnumFacing getFacingFromEntity(@Nonnull EntityLivingBase entity) {
         int heading = MathHelper.floor(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
         switch (heading) {
             case 0:
@@ -382,6 +381,5 @@ public class StandaloneUtilities {
             default:
                 return EnumFacing.WEST;
         }
-
     }
 }

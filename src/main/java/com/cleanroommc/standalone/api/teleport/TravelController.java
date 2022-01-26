@@ -109,8 +109,8 @@ public class TravelController {
         if (!doesHandAllowBlink(hand))
             return false;
 
-        Vector3d eye = StandaloneUtilities.getEyePositionEio(player);
-        Vector3d look = StandaloneUtilities.getLookVecEio(player);
+        Vector3d eye = StandaloneUtilities.getEyePositionStandalone(player);
+        Vector3d look = StandaloneUtilities.getLookVecStandalone(player);
 
         Vector3d sample = new Vector3d(look);
         sample.scale(TravelSource.STAFF_BLINK.getMaxDistanceTravelled());
@@ -365,7 +365,7 @@ public class TravelController {
     }
 
     private static double getDistanceSquared(@Nonnull EntityPlayer player, @Nonnull BlockPos bc) {
-        Vector3d eye = StandaloneUtilities.getEyePositionEio(player);
+        Vector3d eye = StandaloneUtilities.getEyePositionStandalone(player);
         Vector3d target = new Vector3d(bc.getX() + 0.5, bc.getY() + 0.5, bc.getZ() + 0.5);
         return eye.distanceSquared(target);
     }
@@ -556,8 +556,8 @@ public class TravelController {
 
     @Nonnull
     public static double[] getCandidateDistanceAndAngle(@Nonnull Vector3d loc) {
-        Vector3d eye = StandaloneUtilities.getEyePositionEio(Minecraft.getMinecraft().player);
-        Vector3d look = StandaloneUtilities.getLookVecEio(Minecraft.getMinecraft().player);
+        Vector3d eye = StandaloneUtilities.getEyePositionStandalone(Minecraft.getMinecraft().player);
+        Vector3d look = StandaloneUtilities.getLookVecStandalone(Minecraft.getMinecraft().player);
         Vector3d relativeBlock = new Vector3d(loc);
 
         relativeBlock.sub(eye);
