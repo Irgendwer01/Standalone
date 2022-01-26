@@ -10,11 +10,14 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,12 +29,65 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     private long lastBlinkTick = 0;
     private final int maxEnergyStorage;
-    private int energyStored = 100_000;
 
     public ItemTravelStaff(int maxEnergyStorage) {
         super(new ItemSettings().creativeTab(CreativeTabs.TOOLS).maxCount(1).translationKey("travel_staff"));
         this.maxEnergyStorage = maxEnergyStorage;
-        setHasSubtypes(true);
+    }
+
+    @Nullable
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+        return new ICapabilityProvider() {
+
+            final ItemStack delegate = stack;
+
+            EnergyStorage energyStorage;
+
+            @Override
+            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                return capability == CapabilityEnergy.ENERGY;
+            }
+
+            @Nullable
+            @Override
+            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                if (energyStorage == null) {
+                    energyStorage = new EnergyStorage(ItemTravelStaff.this.maxEnergyStorage, Integer.MAX_VALUE, Integer.MAX_VALUE, getEnergyStored(delegate)) {
+
+                        @Override
+                        public int receiveEnergy(int maxReceive, boolean simulate) {
+                            int energy = super.receiveEnergy(maxReceive, simulate);
+                            if (!simulate) {
+                                getOrCreateTag(delegate).setInteger("Energy", this.energy);
+                            }
+                            return energy;
+                        }
+
+                        @Override
+                        public int extractEnergy(int maxExtract, boolean simulate) {
+                            int energy = super.extractEnergy(maxExtract, simulate);
+                            if (!simulate) {
+                                getOrCreateTag(delegate).setInteger("Energy", this.energy);
+                            }
+                            return energy;
+                        }
+
+                    };
+                }
+                return (T) energyStorage;
+            }
+
+        };
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if (tab == this.getCreativeTab()) {
+            ItemStack travelStaff = new ItemStack(this);
+            this.getOrCreateTag(travelStaff).setInteger("Energy", this.maxEnergyStorage);
+            items.add(travelStaff);
+        }
     }
 
     @Nonnull
@@ -77,18 +133,17 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Override
     public int getEnergyStored(@Nonnull ItemStack item) {
-        return this.energyStored;
+        return getOrCreateTag(item).getInteger("Energy");
     }
 
     @Override
     public void extractInternal(@Nonnull ItemStack item, int power) {
-        this.energyStored = Math.max(0, this.energyStored - power);
+        item.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(power, false);
     }
 
     @Override
     public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(energyStored + " / " + maxEnergyStorage);
+        tooltip.add(getEnergyStored(stack) + " / " + maxEnergyStorage);
     }
 
     @Override
@@ -98,6 +153,18 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Override
     public double getDurabilityForDisplay(@Nonnull ItemStack stack) {
-        return 1.0D * (maxEnergyStorage - this.energyStored) / maxEnergyStorage;
+        return 1.0D * (maxEnergyStorage - getEnergyStored(stack)) / maxEnergyStorage;
     }
+
+    private NBTTagCompound getOrCreateTag(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null) {
+            stack.setTagCompound(tag = new NBTTagCompound());
+        }
+        if (!tag.hasKey("Energy")) {
+            tag.setInteger("Energy", 0);
+        }
+        return tag;
+    }
+
 }
