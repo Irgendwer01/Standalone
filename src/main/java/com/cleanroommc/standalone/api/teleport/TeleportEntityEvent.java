@@ -26,13 +26,11 @@ public class TeleportEntityEvent extends EntityEvent {
     /**
      * The target coords. These can be edited by event handlers.
      */
-    private @Nonnull
-    BlockPos targetPos;
+    private BlockPos targetPos;
 
     private int dimension;
 
-    private final @Nonnull
-    TravelSource source;
+    private final TravelSource source;
 
     /**
      * Fired before an entity teleports to the given location.
@@ -47,8 +45,8 @@ public class TeleportEntityEvent extends EntityEvent {
         this.setDimension(dimension);
     }
 
-    public @Nonnull
-    BlockPos getTarget() {
+    @Nonnull
+    public BlockPos getTarget() {
         return targetPos;
     }
 
@@ -64,8 +62,8 @@ public class TeleportEntityEvent extends EntityEvent {
         this.dimension = dimension;
     }
 
-    public @Nonnull
-    TravelSource getSource() {
+    @Nonnull
+    public TravelSource getSource() {
         return source;
     }
 }

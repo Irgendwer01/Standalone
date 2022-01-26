@@ -34,9 +34,9 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
         setHasSubtypes(true);
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack equipped = player.getHeldItem(hand);
         if (player.isSneaking()) {
             long ticksSinceBlink = Standalone.proxy.getTickCount() - lastBlinkTick;

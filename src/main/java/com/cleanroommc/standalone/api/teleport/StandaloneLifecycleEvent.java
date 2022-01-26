@@ -26,11 +26,10 @@ public abstract class StandaloneLifecycleEvent extends Event {
 
     public abstract static class Init extends StandaloneLifecycleEvent {
 
-        private final @Nonnull
-        FMLInitializationEvent event;
+        private final FMLInitializationEvent event;
 
-        public @Nonnull
-        FMLInitializationEvent getEvent() {
+        @Nonnull
+        public FMLInitializationEvent getEvent() {
             return event;
         }
 
@@ -106,11 +105,10 @@ public abstract class StandaloneLifecycleEvent extends Event {
 
     public abstract static class ServerStarting extends StandaloneLifecycleEvent {
 
-        private final @Nonnull
-        FMLServerStartingEvent event;
+        private final FMLServerStartingEvent event;
 
-        public @Nonnull
-        FMLServerStartingEvent getEvent() {
+        @Nonnull
+        public FMLServerStartingEvent getEvent() {
             return event;
         }
 

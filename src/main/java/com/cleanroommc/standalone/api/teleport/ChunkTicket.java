@@ -24,6 +24,7 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Standalone.MODID)
 public class ChunkTicket {
+
     private final ForgeChunkManager.Ticket ticket;
     private long discardTime;
 
