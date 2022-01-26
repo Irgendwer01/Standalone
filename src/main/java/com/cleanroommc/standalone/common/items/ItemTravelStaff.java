@@ -83,7 +83,7 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (tab == this.getCreativeTab()) {
+        if (this.isInCreativeTab(tab)) {
             ItemStack travelStaff = new ItemStack(this);
             this.getOrCreateTag(travelStaff).setInteger("Energy", this.maxEnergyStorage);
             items.add(travelStaff);
