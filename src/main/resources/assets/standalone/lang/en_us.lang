@@ -1,10 +1,17 @@
-
+# universal
+standalone.hold_shift=Hold §aShift§7 for more info
 
 # blocks
 tile.travel_anchor.name=Travel Anchor
+travel_anchor.jump_sneak_teleport=Press §bJump or Sneak§7 to travel to another Anchor
+travel_anchor.jump_teleport=Press §aJump§7 to travel to another Anchor
+travel_anchor.sneak_teleport=Press §aSneak§7 to travel to another Anchor
+travel_anchor.elevator=§aElevators§7: Travel to anchors above or below without facing them
 
 # items
 item.travel_staff.name=Staff of Travelling
+travel_staff.blink=§aSneak Click§7 to blink to any block in range
+travel_staff.travel=§aClick§7 an anchor in range to travel to it
 
 # containers
 container.travel_anchor=Travel Anchor

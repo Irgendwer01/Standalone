@@ -21,7 +21,9 @@ import javax.annotation.Nonnull;
 
 @Mod(modid = Standalone.MODID,
         name = Standalone.NAME,
-        version = Standalone.VERSION)
+        version = Standalone.VERSION,
+        acceptedMinecraftVersions = "[1.12,1.13)",
+        dependencies = "required:forge@[14.23.5.2847,);" + "after:airlock")
 public class Standalone {
 
     public static final String MODID = "standalone";

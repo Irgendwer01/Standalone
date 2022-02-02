@@ -7,6 +7,7 @@ import com.cleanroommc.standalone.api.teleport.ITravelItem;
 import com.cleanroommc.standalone.api.teleport.TravelController;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
 import com.cleanroommc.standalone.common.StandaloneConfig;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,12 +15,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,6 +48,8 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
     public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab)) {
             ItemStack travelStaff = new ItemStack(this);
+            items.add(travelStaff);
+            travelStaff = new ItemStack(this);
             this.getOrCreateTag(travelStaff).setInteger("Energy", this.maxEnergyStorage);
             items.add(travelStaff);
         }
@@ -104,7 +109,25 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Override
     public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flagIn) {
-        tooltip.add(getEnergyStored(stack) + " / " + maxEnergyStorage);
+        int energyStored = getEnergyStored(stack);
+        int energyPercent = 100 * energyStored / maxEnergyStorage;
+        tooltip.add(String.valueOf(energyPercent > 70 ? TextFormatting.GREEN : energyPercent > 30 ? TextFormatting.YELLOW : TextFormatting.RED) +
+                energyStored +
+                TextFormatting.AQUA +
+                " FE" +
+                TextFormatting.GRAY +
+                " / " +
+                TextFormatting.GREEN +
+                maxEnergyStorage +
+                TextFormatting.AQUA +
+                " FE");
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (StandaloneConfig.travel.enableBlink)
+                tooltip.add(I18n.format("travel_staff.blink"));
+            tooltip.add(I18n.format("travel_staff.travel"));
+        } else {
+            tooltip.add(I18n.format("standalone.hold_shift"));
+        }
     }
 
     @Override

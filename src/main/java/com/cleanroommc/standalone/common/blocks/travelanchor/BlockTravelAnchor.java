@@ -7,11 +7,14 @@ import com.cleanroommc.standalone.api.teleport.ITravelAccessible;
 import com.cleanroommc.standalone.client.gui.GuiHandler;
 import com.cleanroommc.standalone.client.render.ITESRBlock;
 import com.cleanroommc.standalone.client.render.renderers.TravelSpecialRenderer;
+import com.cleanroommc.standalone.common.StandaloneConfig;
 import com.cleanroommc.standalone.common.tileentity.travelanchor.TileEntityTravelAnchor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,9 +28,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityProvider, ITESRBlock {
 
@@ -107,5 +112,21 @@ public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityPro
     @SideOnly(Side.CLIENT)
     public void bindTileEntitySpecialRenderer() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTravelAnchor.class, new TravelSpecialRenderer<>());
+    }
+
+    @Override
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (StandaloneConfig.travel.allowJumping && StandaloneConfig.travel.allowSneaking)
+                tooltip.add(I18n.format("travel_anchor.jump_sneak_teleport"));
+            else if (StandaloneConfig.travel.allowJumping)
+                tooltip.add(I18n.format("travel_anchor.jump_teleport"));
+            else if (StandaloneConfig.travel.allowSneaking)
+                tooltip.add(I18n.format("travel_anchor.sneak_teleport"));
+            tooltip.add(I18n.format("travel_anchor.elevator"));
+        } else {
+            tooltip.add(I18n.format("standalone.hold_shift"));
+        }
     }
 }
