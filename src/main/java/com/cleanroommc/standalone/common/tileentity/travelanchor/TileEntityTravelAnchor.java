@@ -2,7 +2,7 @@ package com.cleanroommc.standalone.common.tileentity.travelanchor;
 
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.blockowner.UserIdentification;
-import com.cleanroommc.standalone.api.teleport.ITTravelAccessible;
+import com.cleanroommc.standalone.api.teleport.ITravelAccessible;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
 import com.cleanroommc.standalone.api.tileentity.StandaloneInventoryTileEntity;
 import com.cleanroommc.standalone.common.container.TravelAnchorContainer;
@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implements ITTravelAccessible {
+public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implements ITravelAccessible {
 
     private AccessMode accessMode = AccessMode.PUBLIC;
     private NonNullList<ItemStack> password = NonNullList.withSize(5, ItemStack.EMPTY);

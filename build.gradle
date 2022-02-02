@@ -71,6 +71,7 @@ dependencies {
 		}
 		annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
     }
+	compile(files('/libs/airlock-1.0.jar'))
 }
 
 sourceSets {

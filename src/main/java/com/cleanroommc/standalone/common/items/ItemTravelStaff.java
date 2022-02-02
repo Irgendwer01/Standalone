@@ -1,5 +1,6 @@
 package com.cleanroommc.standalone.common.items;
 
+import com.cleanroommc.airlock.common.capability.ItemEnergyStorage;
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneItem;
 import com.cleanroommc.standalone.api.teleport.ITravelItem;
@@ -17,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -37,52 +37,12 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-        return new ICapabilityProvider() {
-
-            final ItemStack delegate = stack;
-
-            EnergyStorage energyStorage;
-
-            @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                return capability == CapabilityEnergy.ENERGY;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                if (energyStorage == null) {
-                    energyStorage = new EnergyStorage(ItemTravelStaff.this.maxEnergyStorage, Integer.MAX_VALUE, Integer.MAX_VALUE, getEnergyStored(delegate)) {
-
-                        @Override
-                        public int receiveEnergy(int maxReceive, boolean simulate) {
-                            int energy = super.receiveEnergy(maxReceive, simulate);
-                            if (!simulate) {
-                                getOrCreateTag(delegate).setInteger("Energy", this.energy);
-                            }
-                            return energy;
-                        }
-
-                        @Override
-                        public int extractEnergy(int maxExtract, boolean simulate) {
-                            int energy = super.extractEnergy(maxExtract, simulate);
-                            if (!simulate) {
-                                getOrCreateTag(delegate).setInteger("Energy", this.energy);
-                            }
-                            return energy;
-                        }
-
-                    };
-                }
-                return (T) energyStorage;
-            }
-
-        };
+    public ICapabilityProvider initCapabilities(@Nonnull ItemStack stack, @Nullable NBTTagCompound nbt) {
+        return new TravelStaffCapabilityProvider(stack);
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+    public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab)) {
             ItemStack travelStaff = new ItemStack(this);
             this.getOrCreateTag(travelStaff).setInteger("Energy", this.maxEnergyStorage);
@@ -138,6 +98,7 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
     @Override
     public void extractInternal(@Nonnull ItemStack item, int power) {
+        //noinspection ConstantConditions
         item.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(power, false);
     }
 
@@ -156,7 +117,8 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
         return 1.0D * (maxEnergyStorage - getEnergyStored(stack)) / maxEnergyStorage;
     }
 
-    private NBTTagCompound getOrCreateTag(ItemStack stack) {
+    @Nonnull
+    private NBTTagCompound getOrCreateTag(@Nonnull ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null) {
             stack.setTagCompound(tag = new NBTTagCompound());
@@ -165,6 +127,56 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
             tag.setInteger("Energy", 0);
         }
         return tag;
+    }
+
+    private class TravelStaffCapabilityProvider implements ICapabilityProvider {
+
+        private final ItemStack delegate;
+
+        @SuppressWarnings("FieldMayBeFinal")
+        private ItemStack stack;
+
+        ItemEnergyStorage energyStorage;
+
+        public TravelStaffCapabilityProvider(ItemStack stack) {
+            this.delegate = stack;
+            this.stack = stack;
+        }
+
+        @Override
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+            return capability == CapabilityEnergy.ENERGY;
+        }
+
+        @Nullable
+        @Override
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+            if (energyStorage == null) {
+                energyStorage = new ItemEnergyStorage(stack, ItemTravelStaff.this.maxEnergyStorage, Integer.MAX_VALUE, Integer.MAX_VALUE, getEnergyStored(delegate)) {
+
+                    @Override
+                    public int receiveEnergy(int maxReceive, boolean simulate) {
+                        int energy = super.receiveEnergy(maxReceive, simulate);
+                        if (!simulate) {
+                            getOrCreateTag(delegate).setInteger("Energy", this.energy);
+                        }
+                        return energy;
+                    }
+
+                    @Override
+                    public int extractEnergy(int maxExtract, boolean simulate) {
+                        int energy = super.extractEnergy(maxExtract, simulate);
+                        if (!simulate) {
+                            getOrCreateTag(delegate).setInteger("Energy", this.energy);
+                        }
+                        return energy;
+                    }
+
+                };
+            }
+            //noinspection unchecked
+            return (T) energyStorage;
+        }
     }
 
 }

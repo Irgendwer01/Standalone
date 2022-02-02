@@ -17,3 +17,4 @@ standalone.item_travel_staff.chat.notEnoughPower=Not enough power
 standalone.travel_accessible.skip.locked=Skipped locked anchor
 standalone.travel_accessible.skip.private=Skipped private anchor
 standalone.travel_accessible.skip.obstructed=Skipped obstructed anchor
+standalone.ownership.blockowner=Block owned by %s

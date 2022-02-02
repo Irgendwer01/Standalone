@@ -2,6 +2,7 @@ package com.cleanroommc.standalone.common.blocks;
 
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneBlock;
+import com.cleanroommc.standalone.client.render.ITESRBlock;
 import com.cleanroommc.standalone.common.blocks.travelanchor.BlockTravelAnchor;
 import com.cleanroommc.standalone.common.items.StandaloneItems;
 import com.cleanroommc.standalone.common.tileentity.travelanchor.TileEntityTravelAnchor;
@@ -56,8 +57,11 @@ public class StandaloneBlocks {
     }
 
     public static void registerModel() {
-        for (StandaloneBlock block : BLOCKS)
+        for (StandaloneBlock block : BLOCKS) {
             block.registerModel();
+            if (block instanceof ITESRBlock)
+                ((ITESRBlock) block).bindTileEntitySpecialRenderer();
+        }
     }
 
 }

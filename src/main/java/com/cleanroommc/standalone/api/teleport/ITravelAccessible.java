@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ITTravelAccessible {
+public interface ITravelAccessible {
 
     enum AccessMode {
         PUBLIC,

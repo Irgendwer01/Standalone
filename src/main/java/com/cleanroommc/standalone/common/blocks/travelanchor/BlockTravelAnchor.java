@@ -2,7 +2,11 @@ package com.cleanroommc.standalone.common.blocks.travelanchor;
 
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneBlock;
+import com.cleanroommc.standalone.api.blockowner.UserIdentification;
+import com.cleanroommc.standalone.api.teleport.ITravelAccessible;
 import com.cleanroommc.standalone.client.gui.GuiHandler;
+import com.cleanroommc.standalone.client.render.ITESRBlock;
+import com.cleanroommc.standalone.client.render.renderers.TravelSpecialRenderer;
 import com.cleanroommc.standalone.common.tileentity.travelanchor.TileEntityTravelAnchor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -16,12 +20,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityProvider {
+public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityProvider, ITESRBlock {
 
     public BlockTravelAnchor() {
         super(new BlockSettings(Material.IRON)
@@ -57,7 +65,7 @@ public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityPro
     @Nullable
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
-        return new TileEntityTravelAnchor();
+        return new TileEntityTravelAnchor(); //todo this isn't getting set in world
     }
 
     @Override
@@ -68,5 +76,36 @@ public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityPro
             TileEntityTravelAnchor anchor = (TileEntityTravelAnchor) tileEntity;
             anchor.setOwner((EntityPlayer) placer);
         }
+    }
+
+    @Override
+    public boolean removedByPlayer(@Nonnull IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
+        TileEntity te = world.getTileEntity(pos);
+        if (!(te instanceof ITravelAccessible))
+            return false;
+
+        ITravelAccessible travelAccessible = (ITravelAccessible) te;
+
+        if (travelAccessible.getOwner().equals(UserIdentification.create(player.getGameProfile()))
+                || (travelAccessible.getAccessMode() == ITravelAccessible.AccessMode.PUBLIC)
+                || (player.isCreative() && !willHarvest)) {
+            return super.removedByPlayer(state, world, pos, player, willHarvest);
+        } else {
+            if (!world.isRemote) {
+                player.sendStatusMessage(new TextComponentTranslation("standalone.ownership.blockowner", travelAccessible.getOwner().getPlayerName()), true);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube(@Nonnull IBlockState bs) {
+        return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void bindTileEntitySpecialRenderer() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTravelAnchor.class, new TravelSpecialRenderer<>());
     }
 }

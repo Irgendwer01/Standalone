@@ -91,8 +91,8 @@ public class TravelController {
             return false;
         }
         TileEntity te = world.getTileEntity(target);
-        if (te instanceof ITTravelAccessible) {
-            ITTravelAccessible ta = (ITTravelAccessible) te;
+        if (te instanceof ITravelAccessible) {
+            ITravelAccessible ta = (ITravelAccessible) te;
             if (ta.getRequiresPassword(player)) {
                 NetworkHandler.channel.sendToServer(new CPacketOpenAuthGui(target).toFMLPacket());
                 return true;
@@ -241,7 +241,7 @@ public class TravelController {
                 return;
             }
 
-            Pair<BlockPos, ITTravelAccessible> pair = getActiveTravelBlock(player);
+            Pair<BlockPos, ITravelAccessible> pair = getActiveTravelBlock(player);
             onBlockCoord = pair != null ? pair.getLeft() : null;
             boolean onBlock = onBlockCoord != null;
             showTargets = onBlock || isTravelItemActiveForSelecting(player);
@@ -259,8 +259,8 @@ public class TravelController {
             boolean tempSneak = input.sneak;
 
             // Handles teleportation if a target is selected
-            if ((input.jump && !wasJumping && onBlock && selectedCoord != null && StandaloneConfig.travel.allowJumping)
-                    || (input.sneak && !wasSneaking && onBlock && selectedCoord != null && StandaloneConfig.travel.allowSneaking)) {
+            if (input.jump && !wasJumping && StandaloneConfig.travel.allowJumping && onBlock && selectedCoord != null ||
+                    input.sneak && !wasSneaking && StandaloneConfig.travel.allowSneaking && onBlock && selectedCoord != null) {
 
                 onInput(player);
             }
@@ -309,11 +309,10 @@ public class TravelController {
     }
 
     private static boolean travelToLocation(@Nonnull EntityPlayer player, @Nonnull ItemStack equipped, @Nonnull EnumHand hand, @Nonnull TravelSource source, @Nonnull BlockPos coord, boolean conserveMomentum) {
-
         if (source != TravelSource.STAFF_BLINK) {
             TileEntity te = player.world.getTileEntity(coord);
-            if (te instanceof ITTravelAccessible) {
-                ITTravelAccessible ta = (ITTravelAccessible) te;
+            if (te instanceof ITravelAccessible) {
+                ITravelAccessible ta = (ITravelAccessible) te;
                 if (!ta.canBlockBeAccessed(player)) {
                     player.sendMessage(new TextComponentTranslation("standalone.travel_accessible.unauthorized"));
                     return false;
@@ -448,8 +447,7 @@ public class TravelController {
 
     @SideOnly(Side.CLIENT)
     private static void updateVerticalTarget(@Nonnull EntityPlayerSP player, int direction) {
-
-        Pair<BlockPos, ITTravelAccessible> pair = getActiveTravelBlock(player);
+        Pair<BlockPos, ITravelAccessible> pair = getActiveTravelBlock(player);
         if (pair == null)
             return;
 
@@ -460,8 +458,8 @@ public class TravelController {
             // Circumvents the raytracing used to find candidates on the y axis
             TileEntity selectedBlock = world.getTileEntity(new BlockPos(currentBlock.getX(), y, currentBlock.getZ()));
 
-            if (selectedBlock instanceof ITTravelAccessible) {
-                ITTravelAccessible travelBlock = (ITTravelAccessible) selectedBlock;
+            if (selectedBlock instanceof ITravelAccessible) {
+                ITravelAccessible travelBlock = (ITravelAccessible) selectedBlock;
                 BlockPos targetBlock = new BlockPos(currentBlock.getX(), y, currentBlock.getZ());
 
                 if (travelBlock.canBlockBeAccessed(player) && isValidTarget(player, targetBlock, TravelSource.BLOCK)) {
@@ -469,7 +467,7 @@ public class TravelController {
                     return;
                 } else if (travelBlock.getRequiresPassword(player)) {
                     player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.locked"), true);
-                } else if (travelBlock.getAccessMode() == ITTravelAccessible.AccessMode.PRIVATE && !travelBlock.canUiBeAccessed(player)) {
+                } else if (travelBlock.getAccessMode() == ITravelAccessible.AccessMode.PRIVATE && !travelBlock.canUiBeAccessed(player)) {
                     player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.private"), true);
                 } else if (!isValidTarget(player, targetBlock, TravelSource.BLOCK)) {
                     player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.obstructed"), true);
@@ -504,7 +502,6 @@ public class TravelController {
 
     @SideOnly(Side.CLIENT)
     private static void onInput(@Nonnull EntityPlayerSP player) {
-
         MovementInput input = player.movementInput;
         BlockPos target = selectedCoord;
         if (target == null) {
@@ -512,8 +509,8 @@ public class TravelController {
         }
 
         TileEntity te = player.world.getTileEntity(target);
-        if (te instanceof ITTravelAccessible) {
-            ITTravelAccessible ta = (ITTravelAccessible) te;
+        if (te instanceof ITravelAccessible) {
+            ITravelAccessible ta = (ITravelAccessible) te;
             if (ta.getRequiresPassword(player)) {
                 NetworkHandler.channel.sendToServer(new CPacketOpenAuthGui(target).toFMLPacket());
                 return;
@@ -607,7 +604,6 @@ public class TravelController {
 
     // Note: This is restricted to the current player
     public static boolean doClientTeleport(@Nonnull Entity entity, @Nonnull EnumHand hand, @Nonnull BlockPos bc, @Nonnull TravelSource source, int powerUse, boolean conserveMomentum) {
-
         TeleportEntityEvent evt = new TeleportEntityEvent(entity, source, bc, entity.dimension);
         if (MinecraftForge.EVENT_BUS.post(evt)) {
             return false;
@@ -619,7 +615,7 @@ public class TravelController {
 
     @Nullable
     @SideOnly(Side.CLIENT)
-    private static Pair<BlockPos, ITTravelAccessible> getActiveTravelBlock(@Nonnull EntityPlayerSP player) {
+    private static Pair<BlockPos, ITravelAccessible> getActiveTravelBlock(@Nonnull EntityPlayerSP player) {
         World world = Minecraft.getMinecraft().world;
         if (world == null)
             return null;
@@ -627,11 +623,11 @@ public class TravelController {
         int x = MathHelper.floor(player.posX);
         int y = MathHelper.floor(player.getEntityBoundingBox().minY) - 1;
         int z = MathHelper.floor(player.posZ);
-        final BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y, z);
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof ITTravelAccessible) {
-            if (((ITTravelAccessible) tileEntity).isTravelSource())
-                return Pair.of(new BlockPos(x, y, z), ((ITTravelAccessible) tileEntity));
+        if (tileEntity instanceof ITravelAccessible) {
+            if (((ITravelAccessible) tileEntity).isTravelSource())
+                return Pair.of(new BlockPos(x, y, z), ((ITravelAccessible) tileEntity));
         }
         return null;
     }
