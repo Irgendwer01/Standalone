@@ -1,8 +1,8 @@
 package com.cleanroommc.standalone.common.items;
 
-import com.cleanroommc.airlock.common.capability.ItemEnergyStorage;
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneItem;
+import com.cleanroommc.standalone.api.energy.ItemEnergyStorage;
 import com.cleanroommc.standalone.api.teleport.ITravelItem;
 import com.cleanroommc.standalone.api.teleport.TravelController;
 import com.cleanroommc.standalone.api.teleport.TravelSource;

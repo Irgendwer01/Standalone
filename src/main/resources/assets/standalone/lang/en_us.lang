@@ -22,7 +22,4 @@ standalone.travel_anchor=Travel Anchor
 standalone.travel_accessible.outofrange=Destination out of range
 standalone.travel_accessible.invalidtarget=Destination is obstructed
 standalone.item_travel_staff.chat.notEnoughPower=Not enough power
-standalone.travel_accessible.skip.locked=Skipped locked anchor
-standalone.travel_accessible.skip.private=Skipped private anchor
 standalone.travel_accessible.skip.obstructed=Skipped obstructed anchor
-standalone.ownership.blockowner=Block owned by %s
