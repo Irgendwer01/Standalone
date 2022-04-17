@@ -40,7 +40,7 @@ public class GuiHandler implements IGuiHandler {
 
         switch (id) {
             case GUI_TRAVEL_ANCHOR:
-                return new TravelAnchorGui(player.inventory, (TileEntityTravelAnchor) tileEntity, player);
+                return new TravelAnchorGui(player.inventory, tileEntity, player);
             default:
                 return null;
         }

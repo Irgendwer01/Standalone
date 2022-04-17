@@ -110,4 +110,8 @@ public class RenderUtil {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
     }
+
+    public static void bindTexture(@Nonnull ResourceLocation location) {
+        engine().bindTexture(location);
+    }
 }

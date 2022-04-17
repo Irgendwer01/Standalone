@@ -1,5 +1,6 @@
 package com.cleanroommc.standalone.api.tileentity;
 
+import com.cleanroommc.standalone.Standalone;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
@@ -82,13 +83,9 @@ public class StandaloneTileEntity extends TickableTileEntityBase {
         this.cachedLightValue = compound.getInteger("CachedLightValue");
     }
 
-    public void sendInitialSyncData() {
-
-    }
-
     @Override
     public void writeInitialSyncData(@Nonnull PacketBuffer buf) {
-        buf.writeString(getName());
+
     }
 
     @Override
@@ -113,7 +110,7 @@ public class StandaloneTileEntity extends TickableTileEntityBase {
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentTranslation(getName());
+        return new TextComponentTranslation(String.format("%s.%s", Standalone.MODID, getName()));
     }
 
     @Nonnull

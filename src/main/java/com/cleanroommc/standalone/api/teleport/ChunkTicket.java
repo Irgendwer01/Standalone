@@ -53,13 +53,6 @@ public class ChunkTicket {
     private static final List<ChunkTicket> TICKETS = NonNullList.create();
 
     @SubscribeEvent
-    public static void onPreInit(StandaloneLifecycleEvent.PreInit event) {
-        // must register something, but the code that read that back is null-safe---in which case tickets are silently discarded on world load. Which is perfect of
-        // the teleport tickets
-        ForgeChunkManager.setForcedChunkLoadingCallback(Standalone.INSTANCE, null);
-    }
-
-    @SubscribeEvent
     public static void onWorldUnload(WorldEvent.Unload event) {
         TICKETS.clear();
     }

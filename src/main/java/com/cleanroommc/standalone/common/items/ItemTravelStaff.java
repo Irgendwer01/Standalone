@@ -113,8 +113,6 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
         int energyPercent = 100 * energyStored / maxEnergyStorage;
         tooltip.add(String.valueOf(energyPercent > 70 ? TextFormatting.GREEN : energyPercent > 30 ? TextFormatting.YELLOW : TextFormatting.RED) +
                 energyStored +
-                TextFormatting.AQUA +
-                " FE" +
                 TextFormatting.GRAY +
                 " / " +
                 TextFormatting.GREEN +

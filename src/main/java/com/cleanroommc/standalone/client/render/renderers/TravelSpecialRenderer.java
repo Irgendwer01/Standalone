@@ -52,8 +52,7 @@ public class TravelSpecialRenderer<T extends TileEntityTravelAnchor> extends Man
     @Override
     public boolean shouldRender(@Nonnull T te, @Nonnull IBlockState blockState, int renderPass) {
         return TravelController.showTargets() && te.isVisible()
-                && (TravelController.getPosPlayerOn() == null || BlockCoord.getDist(TravelController.getPosPlayerOn(), te.getLocation()) > 2)
-                && te.canSeeBlock(Minecraft.getMinecraft().player);
+                && (TravelController.getPosPlayerOn() == null || BlockCoord.getDist(TravelController.getPosPlayerOn(), te.getLocation()) > 2);
     }
 
     @Override
@@ -139,7 +138,7 @@ public class TravelSpecialRenderer<T extends TileEntityTravelAnchor> extends Man
         }
     }
 
-    public void renderBlock(@Nonnull BlockPos pos, IBlockAccess blockAccess, double globalScale, boolean highlight) {
+    public void renderBlock(@Nonnull BlockPos pos, @Nonnull IBlockAccess blockAccess, double globalScale, boolean highlight) {
         BufferBuilder tes = Tessellator.getInstance().getBuffer();
         BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 

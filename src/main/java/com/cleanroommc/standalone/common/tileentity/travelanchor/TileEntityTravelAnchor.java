@@ -1,32 +1,26 @@
 package com.cleanroommc.standalone.common.tileentity.travelanchor;
 
 import com.cleanroommc.standalone.Standalone;
-import com.cleanroommc.standalone.api.blockowner.UserIdentification;
 import com.cleanroommc.standalone.api.teleport.ITravelAccessible;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
+import com.cleanroommc.standalone.api.tileentity.IGhostSlotTileEntity;
 import com.cleanroommc.standalone.api.tileentity.StandaloneInventoryTileEntity;
 import com.cleanroommc.standalone.common.container.TravelAnchorContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implements ITravelAccessible {
-
-    private AccessMode accessMode = AccessMode.PUBLIC;
-    private NonNullList<ItemStack> password = NonNullList.withSize(5, ItemStack.EMPTY);
-    private final List<UserIdentification> authorisedUsers = new ArrayList<>();
-    private UserIdentification travelOwner;
+public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implements ITravelAccessible, IGhostSlotTileEntity {
 
     private ItemStack itemLabel = ItemStack.EMPTY;
-    private String label;
+    private String label = "";
     private boolean visible = true;
 
     public TileEntityTravelAnchor() {
@@ -45,89 +39,38 @@ public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implem
         return Standalone.MODID + ":travel_anchor";
     }
 
-    private boolean isOwnerUser(UserIdentification identification) {
-        return getOwner().equals(identification);
-    }
-
-    private boolean isAuthorisedUser(UserIdentification identification) {
-        return authorisedUsers.contains(identification);
-    }
-
-    @Override
-    public boolean canBlockBeAccessed(@Nonnull EntityPlayer playerName) {
-        if (accessMode == AccessMode.PUBLIC)
-            return true;
-
-        // Covers protected and private access modes
-        return isOwnerUser(UserIdentification.create(playerName.getGameProfile())) || isAuthorisedUser(UserIdentification.create(playerName.getGameProfile()));
-    }
-
-    @Override
-    public boolean canSeeBlock(@Nonnull EntityPlayer playerName) {
-        if (accessMode != AccessMode.PRIVATE)
-            return true;
-
-        return isOwnerUser(UserIdentification.create(playerName.getGameProfile()));
-    }
-
-    @Override
-    public boolean canUiBeAccessed(@Nonnull EntityPlayer username) {
-        return isOwnerUser(UserIdentification.create(username.getGameProfile()));
-    }
-
-    @Override
-    public boolean getRequiresPassword(@Nonnull EntityPlayer username) {
-        return getAccessMode() == AccessMode.PROTECTED && !canUiBeAccessed(username) && !isAuthorisedUser(UserIdentification.create(username.getGameProfile()));
-    }
-
-    private boolean checkPassword(ItemStack[] pwd) {
-        if (pwd == null || pwd.length != password.size()) {
-            return false;
-        }
-        for (int i = 0; i < pwd.length; i++) {
-            ItemStack pw = password.get(i);
-            ItemStack tst = pwd[i];
-            if (pw.isEmpty() && !tst.isEmpty()) {
-                return false;
-            }
-            if (!pw.isEmpty()) {
-                if (tst.isEmpty() || !ItemStack.areItemStacksEqual(pw, tst)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean authoriseUser(@Nonnull EntityPlayer username, @Nonnull ItemStack[] password) {
-        if (checkPassword(password)) {
-            authorisedUsers.add(UserIdentification.create(username.getGameProfile()));
-            return true;
-        }
-        return false;
-    }
-
     @Nonnull
     @Override
-    public AccessMode getAccessMode() {
-        return accessMode;
+    public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        compound.setString("label", label);
+        compound.setTag("itemLabel", itemLabel.writeToNBT(new NBTTagCompound()));
+        return compound;
     }
 
     @Override
-    public void setAccessMode(@Nonnull AccessMode accessMode) {
-        this.accessMode = accessMode;
-    }
-
-    @Nonnull
-    @Override
-    public NonNullList<ItemStack> getPassword() {
-        return password;
+    public void readFromNBT(@Nonnull NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        this.label = compound.getString("label");
+        this.itemLabel = new ItemStack(compound.getCompoundTag("itemLabel"));
     }
 
     @Override
-    public void setPassword(@Nonnull NonNullList<ItemStack> password) {
-        this.password = password;
+    public void writeInitialSyncData(@Nonnull PacketBuffer buf) {
+        super.writeInitialSyncData(buf);
+        buf.writeString(label);
+        buf.writeItemStack(itemLabel);
+    }
+
+    @Override
+    public void receiveInitialSyncData(PacketBuffer buf) {
+        super.receiveInitialSyncData(buf);
+        this.label = buf.readString(35);
+        try {
+            this.itemLabel = buf.readItemStack();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Nonnull
@@ -141,30 +84,15 @@ public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implem
         this.itemLabel = labelIcon;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public String getLabel() {
         return label;
     }
 
     @Override
-    public void setLabel(@Nullable String label) {
+    public void setLabel(@Nonnull String label) {
         this.label = label;
-    }
-
-    public void setOwner(@Nonnull EntityPlayer player) {
-        this.travelOwner = UserIdentification.create(player.getGameProfile());
-    }
-
-    @Nonnull
-    @Override
-    public UserIdentification getOwner() {
-        return travelOwner != null ? travelOwner : UserIdentification.Nobody.NOBODY;
-    }
-
-    @Override
-    public void clearAuthorisedUsers() {
-        authorisedUsers.clear();
     }
 
     @Nonnull
@@ -186,5 +114,10 @@ public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implem
     @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public void setGhostSlotContents(int slot, ItemStack stack, int size) {
+        setItemLabel(stack);
     }
 }

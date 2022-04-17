@@ -1,56 +1,21 @@
 package com.cleanroommc.standalone.api.teleport;
 
-import com.cleanroommc.standalone.api.blockowner.UserIdentification;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface ITravelAccessible {
-
-    enum AccessMode {
-        PUBLIC,
-        PRIVATE,
-        PROTECTED
-    }
-
-    boolean canBlockBeAccessed(@Nonnull EntityPlayer playerName);
-
-    boolean canSeeBlock(@Nonnull EntityPlayer playerName);
-
-    boolean canUiBeAccessed(@Nonnull EntityPlayer username);
-
-    boolean getRequiresPassword(@Nonnull EntityPlayer username);
-
-    boolean authoriseUser(@Nonnull EntityPlayer username, @Nonnull ItemStack[] password);
-
-    @Nonnull
-    AccessMode getAccessMode();
-
-    void setAccessMode(@Nonnull AccessMode accessMode);
-
-    @Nonnull
-    NonNullList<ItemStack> getPassword();
-
-    void setPassword(@Nonnull NonNullList<ItemStack> password);
 
     @Nonnull
     ItemStack getItemLabel();
 
     void setItemLabel(@Nonnull ItemStack labelIcon);
 
-    @Nullable
+    @Nonnull
     String getLabel();
 
-    void setLabel(@Nullable String label);
-
-    @Nonnull
-    UserIdentification getOwner();
-
-    void clearAuthorisedUsers();
+    void setLabel(@Nonnull String label);
 
     @Nonnull
     BlockPos getLocation();
@@ -70,6 +35,7 @@ public interface ITravelAccessible {
     }
 
     default void setVisible(boolean visible) {
+
     }
 
     /**

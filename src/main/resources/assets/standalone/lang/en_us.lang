@@ -14,10 +14,9 @@ travel_staff.blink=§aSneak Click§7 to blink to any block in range
 travel_staff.travel=§aClick§7 an anchor in range to travel to it
 
 # containers
-container.travel_anchor=Travel Anchor
+standalone.travel_anchor=Travel Anchor
 
 # chat messages
-standalone.travel_accessible.unauthorized=You are not allowed to access this block
 standalone.travel_accessible.outofrange=Destination out of range
 standalone.travel_accessible.invalidtarget=Destination is obstructed
 standalone.item_travel_staff.chat.notEnoughPower=Not enough power

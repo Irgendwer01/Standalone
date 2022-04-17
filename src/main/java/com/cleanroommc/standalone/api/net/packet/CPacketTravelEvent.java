@@ -14,6 +14,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -21,7 +22,7 @@ import javax.annotation.Nonnull;
 
 public class CPacketTravelEvent implements IPacket {
 
-    private long pos;
+    private BlockPos pos;
     private int powerUse;
     private boolean conserveMotion;
     private int source;
@@ -32,7 +33,7 @@ public class CPacketTravelEvent implements IPacket {
     }
 
     public CPacketTravelEvent(@Nonnull BlockPos pos, int powerUse, boolean conserveMotion, @Nonnull TravelSource source, EnumHand hand) {
-        this.pos = pos.toLong();
+        this.pos = pos;
         this.powerUse = powerUse;
         this.conserveMotion = conserveMotion;
         this.source = source.ordinal();
@@ -41,7 +42,7 @@ public class CPacketTravelEvent implements IPacket {
 
     @Override
     public void encode(@Nonnull PacketBuffer buf) {
-        buf.writeLong(pos);
+        buf.writeBlockPos(pos);
         buf.writeInt(powerUse);
         buf.writeBoolean(conserveMotion);
         buf.writeInt(source);
@@ -50,7 +51,7 @@ public class CPacketTravelEvent implements IPacket {
 
     @Override
     public void decode(@Nonnull PacketBuffer buf) {
-        pos = buf.readLong();
+        pos = buf.readBlockPos();
         powerUse = buf.readInt();
         conserveMotion = buf.readBoolean();
         source = buf.readInt();
@@ -59,7 +60,7 @@ public class CPacketTravelEvent implements IPacket {
 
     @Override
     public void executeServer(@Nonnull NetHandlerPlayServer handler) {
-        doServerTeleport(handler.player, BlockPos.fromLong(pos), powerUse, conserveMotion, TravelSource.values()[source], EnumHand.values()[hand]);
+        doServerTeleport(handler.player, pos, powerUse, conserveMotion, TravelSource.values()[source], EnumHand.values()[hand]);
     }
 
     private void doServerTeleport(@Nonnull Entity toTp, @Nonnull BlockPos pos, int powerUse, boolean conserveMotion, @Nonnull TravelSource source, @Nonnull EnumHand hand) {
@@ -72,9 +73,9 @@ public class CPacketTravelEvent implements IPacket {
         pos = evt.getTarget();
 
         if (player != null) {
-            player.playSound(source.sound, 1.0F, 1.0F);
+            player.world.playSound(null, player.getPosition(), source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
             player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5);
-            player.playSound(source.sound, 1.0F, 1.0F);
+            player.world.playSound(null, player.getPosition(), source.sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         } else {
             toTp.setPosition(pos.getX(), pos.getY(), pos.getZ());
         }
@@ -88,7 +89,7 @@ public class CPacketTravelEvent implements IPacket {
                 ((EntityPlayerMP) player).connection.sendPacket(p);
             }
 
-            if (powerUse > 0) {
+            if (powerUse > 0 && !player.isCreative()) {
                 ItemStack heldItem = player.getHeldItem(hand);
                 if (heldItem.getItem() instanceof ITravelItem) {
                     ItemStack item = heldItem.copy();
@@ -97,6 +98,5 @@ public class CPacketTravelEvent implements IPacket {
                 }
             }
         }
-
     }
 }

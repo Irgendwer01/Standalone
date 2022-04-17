@@ -3,7 +3,6 @@ package com.cleanroommc.standalone.api.teleport;
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneValues;
 import com.cleanroommc.standalone.api.net.NetworkHandler;
-import com.cleanroommc.standalone.api.net.packet.CPacketOpenAuthGui;
 import com.cleanroommc.standalone.api.net.packet.CPacketTravelEvent;
 import com.cleanroommc.standalone.api.util.BlockCoord;
 import com.cleanroommc.standalone.api.util.StandaloneUtilities;
@@ -90,14 +89,6 @@ public class TravelController {
         if (target == null) {
             return false;
         }
-        TileEntity te = world.getTileEntity(target);
-        if (te instanceof ITravelAccessible) {
-            ITravelAccessible ta = (ITravelAccessible) te;
-            if (ta.getRequiresPassword(player)) {
-                NetworkHandler.channel.sendToServer(new CPacketOpenAuthGui(target).toFMLPacket());
-                return true;
-            }
-        }
         if (doesHandAllowTravel(hand)) {
             travelToSelectedTarget(player, equipped, hand, source, false);
             return true;
@@ -131,7 +122,7 @@ public class TravelController {
                 sample.set(look);
                 sample.scale(i);
                 sample.add(eye);
-                // we test against our feets location
+                // we test against our feet's location
                 sample.y -= playerHeight;
 
                 if (doBlinkAround(player, equipped, hand, sample, true))
@@ -309,17 +300,6 @@ public class TravelController {
     }
 
     private static boolean travelToLocation(@Nonnull EntityPlayer player, @Nonnull ItemStack equipped, @Nonnull EnumHand hand, @Nonnull TravelSource source, @Nonnull BlockPos coord, boolean conserveMomentum) {
-        if (source != TravelSource.STAFF_BLINK) {
-            TileEntity te = player.world.getTileEntity(coord);
-            if (te instanceof ITravelAccessible) {
-                ITravelAccessible ta = (ITravelAccessible) te;
-                if (!ta.canBlockBeAccessed(player)) {
-                    player.sendMessage(new TextComponentTranslation("standalone.travel_accessible.unauthorized"));
-                    return false;
-                }
-            }
-        }
-
         int requiredPower = getRequiredPower(player, equipped, source, coord);
         if (requiredPower < 0)
             return false;
@@ -338,8 +318,13 @@ public class TravelController {
         }
         if (doClientTeleport(player, hand, coord, source, requiredPower, conserveMomentum) && StandaloneConfig.travel.createParticles) {
             for (int i = 0; i < 6; ++i) {
-                player.world.spawnParticle(EnumParticleTypes.PORTAL, player.posX + (StandaloneValues.RNG.nextDouble() - 0.5D), player.posY + StandaloneValues.RNG.nextDouble() * player.height - 0.25D,
-                        player.posZ + (StandaloneValues.RNG.nextDouble() - 0.5D), (StandaloneValues.RNG.nextDouble() - 0.5D) * 2.0D, -StandaloneValues.RNG.nextDouble(), (StandaloneValues.RNG.nextDouble() - 0.5D) * 2.0D);
+                player.world.spawnParticle(EnumParticleTypes.PORTAL,
+                        player.posX + (StandaloneValues.RNG.nextDouble() - 0.5D),
+                        player.posY + StandaloneValues.RNG.nextDouble() * player.height - 0.25D,
+                        player.posZ + (StandaloneValues.RNG.nextDouble() - 0.5D),
+                        (StandaloneValues.RNG.nextDouble() - 0.5D) * 2.0D,
+                        -StandaloneValues.RNG.nextDouble(),
+                        (StandaloneValues.RNG.nextDouble() - 0.5D) * 2.0D);
             }
         }
         return true;
@@ -462,13 +447,9 @@ public class TravelController {
                 ITravelAccessible travelBlock = (ITravelAccessible) selectedBlock;
                 BlockPos targetBlock = new BlockPos(currentBlock.getX(), y, currentBlock.getZ());
 
-                if (travelBlock.canBlockBeAccessed(player) && isValidTarget(player, targetBlock, TravelSource.BLOCK)) {
+                if (isValidTarget(player, targetBlock, TravelSource.BLOCK)) {
                     selectedCoord = targetBlock;
                     return;
-                } else if (travelBlock.getRequiresPassword(player)) {
-                    player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.locked"), true);
-                } else if (travelBlock.getAccessMode() == ITravelAccessible.AccessMode.PRIVATE && !travelBlock.canUiBeAccessed(player)) {
-                    player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.private"), true);
                 } else if (!isValidTarget(player, targetBlock, TravelSource.BLOCK)) {
                     player.sendStatusMessage(new TextComponentTranslation("standalone.travel_accessible.skip.obstructed"), true);
                 }
@@ -506,15 +487,6 @@ public class TravelController {
         BlockPos target = selectedCoord;
         if (target == null) {
             return;
-        }
-
-        TileEntity te = player.world.getTileEntity(target);
-        if (te instanceof ITravelAccessible) {
-            ITravelAccessible ta = (ITravelAccessible) te;
-            if (ta.getRequiresPassword(player)) {
-                NetworkHandler.channel.sendToServer(new CPacketOpenAuthGui(target).toFMLPacket());
-                return;
-            }
         }
 
         if (travelToSelectedTarget(player, ItemStack.EMPTY, EnumHand.MAIN_HAND, TravelSource.BLOCK, false)) {
