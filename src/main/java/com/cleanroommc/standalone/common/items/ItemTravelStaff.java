@@ -120,9 +120,10 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
                 TextFormatting.AQUA +
                 " FE");
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            if (StandaloneConfig.travel.enableBlink)
-                tooltip.add(I18n.format("travel_staff.blink"));
-            tooltip.add(I18n.format("travel_staff.travel"));
+            if (StandaloneConfig.travel.enableBlink) {
+                tooltip.add(I18n.format("standalone.travel_staff.blink"));
+            }
+            tooltip.add(I18n.format("standalone.travel_staff.travel"));
         } else {
             tooltip.add(I18n.format("standalone.hold_shift"));
         }

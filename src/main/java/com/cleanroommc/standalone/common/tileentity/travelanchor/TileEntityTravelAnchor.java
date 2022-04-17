@@ -36,7 +36,7 @@ public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implem
     @Nonnull
     @Override
     public String getGuiID() {
-        return Standalone.MODID + ":travel_anchor";
+        return String.format("%s:%s", Standalone.MODID, "travel_anchor");
     }
 
     @Nonnull

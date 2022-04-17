@@ -59,7 +59,7 @@ public class StandaloneItem extends Item {
         }
 
         public ItemSettings translationKey(String translationKey) {
-            this.translationKey = translationKey;
+            this.translationKey = String.format("%s.%s", Standalone.MODID, translationKey);
             return this;
         }
 

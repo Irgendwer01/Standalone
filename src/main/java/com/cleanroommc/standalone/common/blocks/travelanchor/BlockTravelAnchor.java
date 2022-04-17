@@ -86,12 +86,12 @@ public class BlockTravelAnchor extends StandaloneBlock implements ITileEntityPro
         super.addInformation(stack, worldIn, tooltip, flagIn);
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if (StandaloneConfig.travel.allowJumping && StandaloneConfig.travel.allowSneaking)
-                tooltip.add(I18n.format("travel_anchor.jump_sneak_teleport"));
+                tooltip.add(I18n.format("standalone.travel_anchor.jump_sneak_teleport"));
             else if (StandaloneConfig.travel.allowJumping)
-                tooltip.add(I18n.format("travel_anchor.jump_teleport"));
+                tooltip.add(I18n.format("standalone.travel_anchor.jump_teleport"));
             else if (StandaloneConfig.travel.allowSneaking)
-                tooltip.add(I18n.format("travel_anchor.sneak_teleport"));
-            tooltip.add(I18n.format("travel_anchor.elevator"));
+                tooltip.add(I18n.format("standalone.travel_anchor.sneak_teleport"));
+            tooltip.add(I18n.format("standalone.travel_anchor.elevator"));
         } else {
             tooltip.add(I18n.format("standalone.hold_shift"));
         }

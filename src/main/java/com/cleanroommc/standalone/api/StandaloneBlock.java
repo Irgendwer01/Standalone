@@ -127,7 +127,7 @@ public class StandaloneBlock extends Block {
         }
 
         public BlockSettings translationKey(String translationKey) {
-            this.translationKey = translationKey;
+            this.translationKey = String.format("%s.%s", Standalone.MODID, translationKey);
             return this;
         }
 
