@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class CPacketTextFieldSync implements IPacket {
 
-    private final int maxTextLength;
+    private int maxTextLength;
 
     private String text;
     private BlockPos pos;
@@ -28,12 +28,14 @@ public class CPacketTextFieldSync implements IPacket {
 
     @Override
     public void encode(@Nonnull PacketBuffer buf) {
+        buf.writeInt(maxTextLength);
         buf.writeString(text);
         buf.writeBlockPos(pos);
     }
 
     @Override
     public void decode(@Nonnull PacketBuffer buf) {
+        this.maxTextLength = buf.readInt();
         this.text = buf.readString(maxTextLength);
         this.pos = buf.readBlockPos();
     }

@@ -1,9 +1,9 @@
 package com.cleanroommc.standalone.common;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraftforge.common.config.Config;
 
-@Config(modid = Standalone.MODID)
+@Config(modid = Tags.MODID)
 public class StandaloneConfig {
 
     public static TravelOptions travel = new TravelOptions();

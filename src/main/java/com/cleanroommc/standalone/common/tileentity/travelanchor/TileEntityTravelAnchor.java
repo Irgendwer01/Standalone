@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.common.tileentity.travelanchor;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.teleport.ITravelAccessible;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
 import com.cleanroommc.standalone.api.tileentity.IGhostSlotTileEntity;
@@ -36,7 +36,7 @@ public class TileEntityTravelAnchor extends StandaloneInventoryTileEntity implem
     @Nonnull
     @Override
     public String getGuiID() {
-        return String.format("%s:%s", Standalone.MODID, "travel_anchor");
+        return String.format("%s:%s", Tags.MODID, "travel_anchor");
     }
 
     @Nonnull

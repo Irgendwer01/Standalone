@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.common.container;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.GuiBase;
 import com.cleanroommc.standalone.api.net.NetworkHandler;
 import com.cleanroommc.standalone.api.net.packet.CPacketTextFieldSync;
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 public class TravelAnchorGui extends GuiBase implements IContainerListener {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Standalone.MODID, "textures/gui/container/travel_anchor.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Tags.MODID, "textures/gui/container/travel_anchor.png");
 
     private GuiTextField nameField;
 

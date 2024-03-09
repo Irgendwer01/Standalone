@@ -1,6 +1,7 @@
 package com.cleanroommc.standalone.api.teleport;
 
 import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,7 @@ import java.util.List;
  * prevent the server from losing track of the player.
  */
 
-@Mod.EventBusSubscriber(modid = Standalone.MODID)
+@Mod.EventBusSubscriber(modid = Tags.MODID)
 public class ChunkTicket {
 
     private final ForgeChunkManager.Ticket ticket;

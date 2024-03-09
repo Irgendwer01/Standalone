@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.api.teleport;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.StandaloneValues;
 import com.cleanroommc.standalone.api.net.NetworkHandler;
 import com.cleanroommc.standalone.api.net.packet.CPacketTravelEvent;
@@ -40,7 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = Standalone.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Tags.MODID, value = Side.CLIENT)
 public class TravelController {
 
     private static boolean wasJumping = false;

@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.proxy;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import javax.annotation.Nonnull;
 
-@Mod.EventBusSubscriber(modid = Standalone.MODID)
+@Mod.EventBusSubscriber(modid = Tags.MODID)
 public final class TickTimer {
 
     private static long serverTickCount = 0;

@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.client.resource;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -20,7 +20,7 @@ public class StandaloneSounds {
 
     @Nonnull
     private static SoundEvent registerSound(@Nonnull String soundNameIn) {
-        ResourceLocation location = new ResourceLocation(Standalone.MODID, soundNameIn);
+        ResourceLocation location = new ResourceLocation(Tags.MODID, soundNameIn);
         SoundEvent event = new SoundEvent(location);
         event.setRegistryName(location);
         ForgeRegistries.SOUND_EVENTS.register(event);

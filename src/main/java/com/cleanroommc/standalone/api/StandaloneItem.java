@@ -1,6 +1,7 @@
 package com.cleanroommc.standalone.api;
 
 import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -59,7 +60,7 @@ public class StandaloneItem extends Item {
         }
 
         public ItemSettings translationKey(String translationKey) {
-            this.translationKey = String.format("%s.%s", Standalone.MODID, translationKey);
+            this.translationKey = String.format("%s.%s", Tags.MODID, translationKey);
             return this;
         }
 

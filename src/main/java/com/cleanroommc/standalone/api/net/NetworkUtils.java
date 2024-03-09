@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.api.net;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.state.IBlockState;
@@ -43,7 +43,7 @@ public class NetworkUtils {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         buf.writeVarInt(PacketHandler.getPacketId(packet.getClass()));
         packet.encode(buf);
-        return new FMLProxyPacket(buf, Standalone.MODID);
+        return new FMLProxyPacket(buf, Tags.MODID);
     }
 
     @Nonnull

@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.api.tileentity;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
@@ -110,7 +110,7 @@ public class StandaloneTileEntity extends TickableTileEntityBase {
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentTranslation(String.format("%s.%s", Standalone.MODID, getName()));
+        return new TextComponentTranslation(String.format("%s.%s", Tags.MODID, getName()));
     }
 
     @Nonnull

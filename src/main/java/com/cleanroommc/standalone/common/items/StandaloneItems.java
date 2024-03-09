@@ -1,6 +1,7 @@
 package com.cleanroommc.standalone.common.items;
 
 import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.StandaloneItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -20,7 +21,7 @@ public class StandaloneItems {
 
     @Nonnull
     private static <T extends StandaloneItem> T register(@Nonnull String id, @Nonnull T item) {
-        item.setRegistryName(Standalone.MODID, id);
+        item.setRegistryName(Tags.MODID, id);
         ITEMS.add(item);
         return item;
     }

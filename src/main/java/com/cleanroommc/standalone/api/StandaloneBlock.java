@@ -1,6 +1,7 @@
 package com.cleanroommc.standalone.api;
 
 import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -127,7 +128,7 @@ public class StandaloneBlock extends Block {
         }
 
         public BlockSettings translationKey(String translationKey) {
-            this.translationKey = String.format("%s.%s", Standalone.MODID, translationKey);
+            this.translationKey = String.format("%s.%s", Tags.MODID, translationKey);
             return this;
         }
 

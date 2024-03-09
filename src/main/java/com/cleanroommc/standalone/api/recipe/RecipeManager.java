@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.api.recipe;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.StandaloneValues;
 import com.cleanroommc.standalone.utils.StandaloneLog;
 import net.minecraft.block.Block;
@@ -99,7 +99,7 @@ public class RecipeManager {
             }
             if (skip | validateRecipe(regName, recipe)) return;
 
-            IRecipe shapedOreRecipe = new ShapedOreRecipe(new ResourceLocation(Standalone.MODID, "general"), result.copy(), finalizeShapedRecipeInput(recipe))
+            IRecipe shapedOreRecipe = new ShapedOreRecipe(new ResourceLocation(Tags.MODID, "general"), result.copy(), finalizeShapedRecipeInput(recipe))
                     .setMirrored(true)
                     .setRegistryName(regName);
             ForgeRegistries.RECIPES.register(shapedOreRecipe);
@@ -142,7 +142,7 @@ public class RecipeManager {
                                 .collect(Collectors.joining(", ")));
                 StandaloneLog.logger.error("Stacktrace:", new IllegalArgumentException());
                 skip = true;
-            } else if (ForgeRegistries.RECIPES.containsKey(new ResourceLocation(Standalone.MODID, regName))) {
+            } else if (ForgeRegistries.RECIPES.containsKey(new ResourceLocation(Tags.MODID, regName))) {
                 StandaloneLog.logger.error("Tried to register recipe, {}, with duplicate key. Recipe: {}", regName,
                         Arrays.stream(recipe)
                                 .map(Object::toString)

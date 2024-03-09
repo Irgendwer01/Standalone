@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.api.net;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.net.packet.CPacketGhostSlot;
 import com.cleanroommc.standalone.api.net.packet.CPacketTextFieldSync;
 import com.cleanroommc.standalone.api.net.packet.CPacketTravelEvent;
@@ -28,7 +28,7 @@ public class NetworkHandler {
 
     // Register your packets here
     public static void init() {
-        channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(Standalone.MODID);
+        channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(Tags.MODID);
         channel.register(new NetworkHandler());
 
         registerPacket(CPacketTravelEvent.class);

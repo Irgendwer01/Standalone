@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.proxy;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.net.NetworkHandler;
 import com.cleanroommc.standalone.recipes.StandaloneRecipeLoader;
 import net.minecraft.item.Item;
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 
-@Mod.EventBusSubscriber(modid = Standalone.MODID)
+@Mod.EventBusSubscriber(modid = Tags.MODID)
 public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {

@@ -1,6 +1,6 @@
 package com.cleanroommc.standalone.common.blocks;
 
-import com.cleanroommc.standalone.Standalone;
+import com.cleanroommc.standalone.Tags;
 import com.cleanroommc.standalone.api.StandaloneBlock;
 import com.cleanroommc.standalone.client.render.ITESRBlock;
 import com.cleanroommc.standalone.common.blocks.travelanchor.BlockTravelAnchor;
@@ -29,7 +29,7 @@ public class StandaloneBlocks {
 
 
     private static <T extends StandaloneBlock> T register(String id, @Nonnull T block) {
-        block.setRegistryName(Standalone.MODID, id);
+        block.setRegistryName(Tags.MODID, id);
         BLOCKS.add(block);
         StandaloneItems.ITEM_BLOCKS.add(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         return block;
@@ -52,7 +52,7 @@ public class StandaloneBlocks {
         }
 
         for (Map.Entry<Class<? extends TileEntity>, String> entry : TILE_ENTITIES.entrySet()) {
-            GameRegistry.registerTileEntity(entry.getKey(), new ResourceLocation(Standalone.MODID, entry.getValue()));
+            GameRegistry.registerTileEntity(entry.getKey(), new ResourceLocation(Tags.MODID, entry.getValue()));
         }
     }
 

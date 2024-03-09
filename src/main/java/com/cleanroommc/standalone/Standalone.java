@@ -20,21 +20,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 
-@Mod(modid = Standalone.MODID,
-        name = Standalone.NAME,
-        version = Standalone.VERSION,
+@Mod(modid = Tags.MODID,
+        name = Tags.MODNAME,
+        version = Tags.VERSION,
         acceptedMinecraftVersions = "[1.12,1.13)",
         dependencies = "required:forge@[14.23.5.2847,);" + "after:airlock")
 public class Standalone {
 
-    public static final String MODID = "standalone";
-    public static final String NAME = "Standalone";
-    public static final String VERSION = "@VERSION@";
-
     @Mod.Instance
     public static Standalone INSTANCE;
 
-    @SidedProxy(modId = MODID, clientSide = "com.cleanroommc.standalone.proxy.ClientProxy", serverSide = "com.cleanroommc.standalone.proxy.CommonProxy")
+    @SidedProxy(modId = Tags.MODID, clientSide = "com.cleanroommc.standalone.proxy.ClientProxy", serverSide = "com.cleanroommc.standalone.proxy.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
