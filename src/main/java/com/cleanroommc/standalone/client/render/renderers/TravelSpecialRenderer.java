@@ -75,7 +75,7 @@ public class TravelSpecialRenderer<T extends TileEntityTravelAnchor> extends Man
         GlStateManager.enableRescaleNormal();
         GlStateManager.disableDepth();
         GlStateManager.disableLighting();
-
+        if (te.getItemLabel().isEmpty() || te.getItemLabel() == null)
         renderBlock(te.getPos(), te.getWorld(), sf, highlight);
         renderItemLabel(te.getItemLabel(), sf);
         renderLabel(te.getLabel(), sf, highlight);
