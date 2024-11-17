@@ -2,11 +2,13 @@ package com.cleanroommc.standalone.common.items;
 
 import com.cleanroommc.standalone.Standalone;
 import com.cleanroommc.standalone.api.StandaloneItem;
+import com.cleanroommc.standalone.api.capabilities.Capabilities;
 import com.cleanroommc.standalone.api.energy.ItemEnergyStorage;
 import com.cleanroommc.standalone.api.teleport.ITravelItem;
 import com.cleanroommc.standalone.api.teleport.TravelController;
 import com.cleanroommc.standalone.api.teleport.TravelSource;
 import com.cleanroommc.standalone.common.StandaloneConfig;
+import gregtech.api.capability.IElectricItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -27,6 +30,7 @@ import org.lwjgl.input.Keyboard;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
@@ -167,33 +171,63 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+            if (Loader.isModLoaded("gregtech")) {
+                return capability == CapabilityEnergy.ENERGY || capability == Capabilities.GTCE_ENERGY_ITEM;
+            }
             return capability == CapabilityEnergy.ENERGY;
         }
-
         @Nullable
-        @Override
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
             if (energyStorage == null) {
-                energyStorage = new ItemEnergyStorage(stack, ItemTravelStaff.this.maxEnergyStorage, Integer.MAX_VALUE, Integer.MAX_VALUE, getEnergyStored(delegate)) {
-
+                energyStorage = new ItemEnergyStorage(stack, ItemTravelStaff.this.maxEnergyStorage, Integer.MAX_VALUE, Integer.MAX_VALUE, getEnergyStored(delegate));
+            }
+            if (capability == Capabilities.GTCE_ENERGY_ITEM) {
+                //noinspection unchecked
+                return (T) new IElectricItem() {
                     @Override
-                    public int receiveEnergy(int maxReceive, boolean simulate) {
-                        int energy = super.receiveEnergy(maxReceive, simulate);
-                        if (!simulate) {
-                            getOrCreateTag(delegate).setInteger("Energy", this.energy);
-                        }
-                        return energy;
+                    public boolean canProvideChargeExternally() {
+                        return energyStorage.canExtract();
                     }
 
                     @Override
-                    public int extractEnergy(int maxExtract, boolean simulate) {
-                        int energy = super.extractEnergy(maxExtract, simulate);
-                        if (!simulate) {
-                            getOrCreateTag(delegate).setInteger("Energy", this.energy);
-                        }
-                        return energy;
+                    public boolean chargeable() {
+                        return energyStorage.canReceive();
                     }
 
+                    @Override
+                    public void addChargeListener(BiConsumer<ItemStack, Long> biConsumer) {
+
+                    }
+
+                    @Override
+                    public long charge(long l, int i, boolean b, boolean b1) {
+                        return energyStorage.receiveEnergy((int) l * 4, b1);
+                    }
+
+                    @Override
+                    public long discharge(long l, int i, boolean b, boolean b1, boolean b2) {
+                        return energyStorage.extractEnergy((int) l * 4, b2);
+                    }
+
+                    @Override
+                    public long getTransferLimit() {
+                        return Long.MAX_VALUE;
+                    }
+
+                    @Override
+                    public long getMaxCharge() {
+                        return energyStorage.getMaxEnergyStored() / 4;
+                    }
+
+                    @Override
+                    public long getCharge() {
+                        return energyStorage.getEnergyStored() / 4;
+                    }
+
+                    @Override
+                    public int getTier() {
+                        return 0;
+                    }
                 };
             }
             //noinspection unchecked
