@@ -64,14 +64,14 @@ public class ItemTravelStaff extends StandaloneItem implements ITravelItem {
     public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack equipped = player.getHeldItem(hand);
         if (player.isSneaking()) {
-            long ticksSinceBlink = Standalone.proxy.getTickCount() - lastBlinkTick;
+            long ticksSinceBlink = Standalone.proxy.getClientTickCount() - lastBlinkTick;
             if (ticksSinceBlink < 0) {
                 lastBlinkTick = -1;
             }
             if (StandaloneConfig.travel.enableBlink && world.isRemote && ticksSinceBlink >= StandaloneConfig.travel.blinkDelay) {
                 if (TravelController.doBlink(equipped, hand, player)) {
                     player.swingArm(hand);
-                    lastBlinkTick = Standalone.proxy.getTickCount();
+                    lastBlinkTick = Standalone.proxy.getClientTickCount();
                 }
             }
             return new ActionResult<>(EnumActionResult.SUCCESS, equipped);

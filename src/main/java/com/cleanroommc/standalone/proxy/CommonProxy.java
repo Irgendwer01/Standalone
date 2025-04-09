@@ -41,6 +41,10 @@ public class CommonProxy {
         return TickTimer.getServerTickCount();
     }
 
+    public long getClientTickCount() {
+        return TickTimer.getClientTickCount();
+    }
+
     @SubscribeEvent
     public static void registerRecipes(@Nonnull RegistryEvent.Register<IRecipe> event) {
         StandaloneRecipeLoader.init();
